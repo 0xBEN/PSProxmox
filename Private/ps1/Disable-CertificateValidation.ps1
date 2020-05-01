@@ -10,7 +10,7 @@ function Disable-CertificateValidation {
 @"
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
-public static class DoNotValidate
+public static class DoNotValidateCertificates
 {
     private static bool ValidationCallback(object sender, X509Certificate certificate, X509Chain chain,
         SslPolicyErrors sslPolicyErrors) { return true; }
@@ -23,7 +23,7 @@ public static class DoNotValidate
     process {
 
         if (-not ([System.Management.Automation.PSTypeName]"DoNotValidateCertificates").Type) { Add-Type -TypeDefinition $class }
-        [DoNotValidate]::SetCallback()    
+        [DoNotValidateCertificates]::SetCallback()    
 
     }
 
