@@ -10,7 +10,7 @@ function Disable-CertificateValidation {
 @"
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
-public static class TrustEverything
+public static class DoNotValidate
 {
     private static bool ValidationCallback(object sender, X509Certificate certificate, X509Chain chain,
         SslPolicyErrors sslPolicyErrors) { return true; }
@@ -22,8 +22,8 @@ public static class TrustEverything
     }
     process {
 
-        if (-not ([System.Management.Automation.PSTypeName]"TrustEverything").Type) { Add-Type -TypeDefinition $class }
-        [TrustEverything]::SetCallback()    
+        if (-not ([System.Management.Automation.PSTypeName]"DoNotValidateCertificates").Type) { Add-Type -TypeDefinition $class }
+        [DoNotValidate]::SetCallback()    
 
     }
 

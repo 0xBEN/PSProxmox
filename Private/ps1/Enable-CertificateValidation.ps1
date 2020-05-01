@@ -6,7 +6,7 @@ function Enable-CertificateValidation {
     )
     process {
 
-        if (([System.Management.Automation.PSTypeName]"TrustEverything").Type) { [TrustEverything]::UnsetCallback() }
+        if (([System.Management.Automation.PSTypeName]"DoNotValidateCertificates").Type) { [DoNotValidate]::UnsetCallback() }
     
     }
 
