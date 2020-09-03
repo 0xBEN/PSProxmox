@@ -92,7 +92,7 @@ function Connect-ProxmoxApi {
         }
         catch {
 
-            throw $_
+            throw $_.Exception
 
         }
 
