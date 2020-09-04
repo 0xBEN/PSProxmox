@@ -41,6 +41,7 @@ function Open-ProxmoxNodeSpiceProxy {
             $content | Out-File $OutFilePath -Encoding ascii -Force -ErrorAction Stop
             
             Start-Job -ScriptBlock {Invoke-Item $args} -ArgumentList $OutFilePath | Out-Null
+            
         }
         catch {
 
