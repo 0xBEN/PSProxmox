@@ -7,6 +7,15 @@ $publicFunctions | ForEach-Object { . $_.FullName }
 $privateFunctions | ForEach-Object { . $_.FullName }
 #endregion Import Scripts
 
+
+if (-not $aliases) { $aliases = "*" }
+try {
+    Update-ModuleManifest -Path "$PSScriptRoot\PSProxmox.psd1" -FunctionsToExport $publicFunctions.BaseName -AliasesToExport $aliases
+}
+catch {
+    Out-Null
+}
+
 #region Export Public Functions and Aliases
 $aliases = @()
 $publicFunctions | ForEach-Object { # Export all of the public functions from this module
@@ -17,7 +26,6 @@ $publicFunctions | ForEach-Object { # Export all of the public functions from th
         $filter = $hasAlias.Line.Split('"*",') -replace "\[\w+\(", "" -replace "\)\]", "" # Split the string where there is a pattern of '"string",' -- creating an array -- then replace the [alias()] characters with whitespace
         $alias = $filter | Where-Object { -not[string]::IsNullOrWhiteSpace($_) } # Remove any whitespace from the string, leaving only characters
         $aliases += $alias
-
         Export-ModuleMember -Function $_.BaseName -Alias $alias
 
     }
@@ -29,16 +37,3 @@ $publicFunctions | ForEach-Object { # Export all of the public functions from th
 
 }
 #endregion Export Public Functions and Aliases
-
-if (-not $aliases) { $aliases = "*" }
-try {
-
-    Update-ModuleManifest -Path "$PSScriptRoot\PSProxmox.psd1" -FunctionsToExport $publicFunctions.BaseName -AliasesToExport $aliases
-
-}
-catch {
-
-    Out-Null
-
-
-}
