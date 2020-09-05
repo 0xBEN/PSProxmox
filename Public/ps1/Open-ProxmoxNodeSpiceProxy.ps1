@@ -32,15 +32,12 @@ function Open-ProxmoxNodeSpiceProxy {
     )
     begin { 
 
-        if ($SkipProxmoxCertificateCheck) {
-            
-            if ($PSVersionTable.PSEdition -ne 'Core') {
-                Disable-CertificateValidation # Custom function to bypass X.509 cert checks
-            }
-            else {
-                $NoCertCheckPSCore = $true
-            }
-        
+        try { Confirm-ProxmoxApiConnection }
+        catch { throw "Please connect to the Proxmox API using the command: Connect-ProxmoxApi" }
+
+        if ($SkipProxmoxCertificateCheck) {            
+            if ($PSVersionTable.PSEdition -ne 'Core') { Disable-CertificateValidation } # Custom function to bypass X.509 cert checks
+            else { $NoCertCheckPSCore = $true }        
         }
         $uri = $proxmoxApiBaseUri.AbsoluteUri + "nodes/$($ProxmoxNode.node)/qemu/$VMID/spiceproxy"
 

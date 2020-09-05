@@ -21,18 +21,13 @@ function Get-ProxmoxNodeDiskSmartHealth {
     )
     begin { 
 
-        if ($SkipProxmoxCertificateCheck) {
-            
-            if ($PSVersionTable.PSEdition -ne 'Core') {
-                Disable-CertificateValidation # Custom function to bypass X.509 cert checks
-            }
-            else {
-                $NoCertCheckPSCore = $true
-            }
-        
+        try { Confirm-ProxmoxApiConnection }
+        catch { throw "Please connect to the Proxmox API using the command: Connect-ProxmoxApi" }
+
+        if ($SkipProxmoxCertificateCheck) {            
+            if ($PSVersionTable.PSEdition -ne 'Core') { Disable-CertificateValidation } # Custom function to bypass X.509 cert checks
+            else { $NoCertCheckPSCore = $true }        
         }
-        $body = @{}
-        if ($PSBoundParameters['HealthOnly']) { $body.Add('healthonly', $true) }
 
     }
     process {
@@ -44,6 +39,7 @@ function Get-ProxmoxNodeDiskSmartHealth {
 
                 $body = @{}
                 $body.Add('disk', $_)
+                if ($PSBoundParameters['HealthOnly']) { $body.Add('healthonly', $true) }
                 try {
                     
                     if ($NoCertCheckPSCore) { # PS Core client                    

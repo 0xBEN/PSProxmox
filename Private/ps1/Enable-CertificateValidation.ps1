@@ -1,13 +1,9 @@
 function Enable-CertificateValidation {
 
     [CmdletBinding()]
-    Param(
-
-    )
+    Param()
     process {
-
         if (([System.Management.Automation.PSTypeName]"DoNotValidateCertificates").Type) { [DoNotValidateCertificates]::UnsetCallback() }
-    
     }
 
 }

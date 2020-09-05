@@ -11,17 +11,17 @@ function Get-ProxmoxNodeTime {
         $ProxmoxNode
     )
     begin { 
-        if ($SkipProxmoxCertificateCheck) {
-            
-            if ($PSVersionTable.PSEdition -ne 'Core') {
-                Disable-CertificateValidation # Custom function to bypass X.509 cert checks
-            }
-            else {
-                $NoCertCheckPSCore = $true
-            }
-        
+
+        try { Confirm-ProxmoxApiConnection }
+        catch { throw "Please connect to the Proxmox API using the command: Connect-ProxmoxApi" }
+
+        if ($SkipProxmoxCertificateCheck) {            
+            if ($PSVersionTable.PSEdition -ne 'Core') { Disable-CertificateValidation } # Custom function to bypass X.509 cert checks
+            else { $NoCertCheckPSCore = $true }        
         }
+        
         [DateTime]$epoch = '1970-01-01 00:00:00'
+
     }
     process {
 
