@@ -68,7 +68,15 @@ function Connect-ProxmoxApi {
     )
     begin {
 
-        if ($SkipCertificateValidation) { Disable-CertificateValidation }
+        if ($SkipCertificateValidation) {
+            if ($PSVersionTable.PSEdition -ne 'Core') {
+                Disable-CertificateValidation # Custom function to bypass X.509 cert checks
+            }
+            else {
+                $NoCertCheckPSCore = $true
+            }
+        
+        }
         $username = $ProxmoxCredential.UserName
         $password = $ProxmoxCredential.GetNetworkCredential().Password
         $body = @{
@@ -83,11 +91,22 @@ function Connect-ProxmoxApi {
 
         try {
 
-            $apiCall = Invoke-RestMethod `
-            -Method Post `
-            -Uri ($proxmoxApiBaseUri.AbsoluteUri + 'access/ticket') `
-            -Body $body `
-            -SessionVariable pveTicket
+            if ($NoCertCheckPSCore) {
+                $apiCall = Invoke-RestMethod `
+                -Method Post `
+                -Uri ($proxmoxApiBaseUri.AbsoluteUri + 'access/ticket') `
+                -SkipCertificateCheck `
+                -AllowUnencryptedAuthentication `
+                -Body $body `
+                -SessionVariable pveTicket    
+            }
+            else {
+                $apiCall = Invoke-RestMethod `
+                -Method Post `
+                -Uri ($proxmoxApiBaseUri.AbsoluteUri + 'access/ticket') `
+                -Body $body `
+                -SessionVariable pveTicket    
+            }
 
         }
         catch {
@@ -99,7 +118,7 @@ function Connect-ProxmoxApi {
     }
     end {
 
-        if ($SkipCertificateValidation) { Enable-CertificateValidation }
+        if ($SkipCertificateValidation -and -not $NoCertCheckPSCore) { Enable-CertificateValidation }
         if ($apiCall) {
 
             $cookie = New-ProxmoxAuthCookie $ServerUri $apiCall.data.ticket
@@ -110,21 +129,21 @@ function Connect-ProxmoxApi {
             -Name ProxmoxApiBaseUri `
             -Value $proxmoxApiBaseUri `
             -Option ReadOnly `
-            -Scope Global `
+            -Scope Script `
             -Force
 
             Set-Variable `
             -Name ProxmoxWebSession `
             -Value $pveTicket `
             -Option ReadOnly `
-            -Scope Global `
+            -Scope Script `
             -Force
 
             Set-Variable `
             -Name ProxmoxCsrfToken `
             -Value @{ 'CSRFPreventionToken' = $apiCall.data.CSRFPreventionToken } `
             -Option ReadOnly `
-            -Scope Global `
+            -Scope Script `
             -Force
 
             if ($SkipCertificateValidation) {
@@ -133,7 +152,7 @@ function Connect-ProxmoxApi {
                 -Name SkipProxmoxCertificateCheck `
                 -Value $true `
                 -Option ReadOnly `
-                -Scope Global `
+                -Scope Script `
                 -Force
 
             }
@@ -143,7 +162,7 @@ function Connect-ProxmoxApi {
                 -Name SkipProxmoxCertificateCheck `
                 -Value $false `
                 -Option ReadOnly `
-                -Scope Global `
+                -Scope Script `
                 -Force
 
             }

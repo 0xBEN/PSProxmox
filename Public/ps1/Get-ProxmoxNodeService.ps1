@@ -1,4 +1,4 @@
-function Get-ProxmoxNodeVM {
+function Get-ProxmoxNodeService {
 
     [CmdletBinding()]
     Param (
@@ -10,9 +10,10 @@ function Get-ProxmoxNodeVM {
         [PSObject[]]
         $ProxmoxNode,
 
-        [Parameter(Position = 1)]
-        [Int[]]
-        $VMID
+        [Parameter()]
+        [ValidateSet('corosync', 'cron', 'ksmtuned', 'postfix', 'pve-cluster', 'pvedaemon', 'pve-firewall', 'pvefw-logger', 'pve-ha-crm', 'pve-ha-lrm', 'pveproxy', 'pvestatd', 'spiceproxy', 'sshd', 'syslog', 'systemd-timesyncd')]
+        [String[]]
+        $ServiceName
     )
     begin { 
 
@@ -33,32 +34,32 @@ function Get-ProxmoxNodeVM {
         $ProxmoxNode | ForEach-Object {
             
             $node = $_
-            if ($VMID) {
+            if ($ServiceName) {
 
-                $VMID | ForEach-Object {
-                    
+                $ServiceName | ForEach-Object {
+
                     try {
-
-                        if ($NoCertCheckPSCore) {
+                    
+                        if ($NoCertCheckPSCore) { # PS Core client                    
                             Invoke-RestMethod `
                             -Method Get `
-                            -Uri ($proxmoxApiBaseUri.AbsoluteUri + "nodes/$($node.node)/qemu/$_/status/current") `
+                            -Uri ($proxmoxApiBaseUri.AbsoluteUri + "nodes/$($node.node)/services/$_/state") `
                             -SkipCertificateCheck `
-                            -WebSession $ProxmoxWebSession | Select-Object -ExpandProperty data
+                            -WebSession $ProxmoxWebSession | Select-Object -ExpandProperty data    
                         }
-                        else {
+                        else { # PS Desktop client
                             Invoke-RestMethod `
                             -Method Get `
-                            -Uri ($proxmoxApiBaseUri.AbsoluteUri + "nodes/$($node.node)/qemu/$_/status/current") `
+                            -Uri ($proxmoxApiBaseUri.AbsoluteUri + "nodes/$($node.node)/services/$_/state") `
                             -WebSession $ProxmoxWebSession | Select-Object -ExpandProperty data
                         }
                         
                     }
                     catch {
         
-                        Write-Error -Exception $_.Exception
+                        throw $_.Exception
         
-                    }    
+                    }
 
                 }
 
@@ -66,26 +67,26 @@ function Get-ProxmoxNodeVM {
             else {
 
                 try {
-
-                    if ($NoCertCheckPSCore) {
+                
+                    if ($NoCertCheckPSCore) { # PS Core client                    
                         Invoke-RestMethod `
                         -Method Get `
-                        -Uri ($proxmoxApiBaseUri.AbsoluteUri + "nodes/$($node.node)/qemu") `
+                        -Uri ($proxmoxApiBaseUri.AbsoluteUri + "nodes/$($node.node)/services") `
                         -SkipCertificateCheck `
-                        -WebSession $ProxmoxWebSession | Select-Object -ExpandProperty data
+                        -WebSession $ProxmoxWebSession | Select-Object -ExpandProperty data    
                     }
-                    else {
+                    else { # PS Desktop client
                         Invoke-RestMethod `
                         -Method Get `
-                        -Uri ($proxmoxApiBaseUri.AbsoluteUri + "nodes/$($node.node)/qemu") `
+                        -Uri ($proxmoxApiBaseUri.AbsoluteUri + "nodes/$($node.node)/services") `
                         -WebSession $ProxmoxWebSession | Select-Object -ExpandProperty data
                     }
                     
                 }
                 catch {
-
+    
                     throw $_.Exception
-
+    
                 }
 
             }

@@ -1,4 +1,4 @@
-function Get-ProxmoxNodeVersion {
+function Get-ProxmoxNodeSyslog {
 
     [CmdletBinding()]
     Param (
@@ -8,7 +8,28 @@ function Get-ProxmoxNodeVersion {
             ValueFromPipeline = $true
         )]
         [PSObject[]]
-        $ProxmoxNode
+        $ProxmoxNode,
+
+        [Parameter()]
+        [Int]
+        $ResultCount,
+
+        [Parameter()]
+        [Int]
+        $StartAtLogLine,
+
+        [Parameter()]
+        [ValidateNotNullOrEmpty()]
+        [String]
+        $ServiceID,
+
+        [Parameter()]
+        [DateTime]
+        $StartDate,
+
+        [Parameter()]
+        [DateTime]
+        $EndDate
     )
     begin { 
 
@@ -22,6 +43,13 @@ function Get-ProxmoxNodeVersion {
             }
         
         }
+        
+        $body = @{}
+        if ($PSBoundParameters['ResultCount']) { $body.Add('limit', $PSBoundParameters['ResultCount']) }
+        if ($PSBoundParameters['StartAtLogLine']) { $body.Add('start', $PSBoundParameters['StartAtLogLine']) }
+        if ($PSBoundParameters['ServiceID']) { $body.Add('service', $PSBoundParameters['ServiceID']) }
+        if ($PSBoundParameters['StartDate']) { $body.Add('since', $PSBoundParameters['StartDate'].ToString('yyyy-MM-dd hh:mm:ss')) }
+        if ($PSBoundParameters['EndDate']) { $body.Add('until', $PSBoundParameters['EndDate'].ToString('yyyy-MM-dd hh:mm:ss')) }
 
     }
     process {
@@ -34,14 +62,16 @@ function Get-ProxmoxNodeVersion {
                 if ($NoCertCheckPSCore) { # PS Core client                    
                     Invoke-RestMethod `
                     -Method Get `
-                    -Uri ($proxmoxApiBaseUri.AbsoluteUri + "nodes/$($node.node)/version") `
+                    -Uri ($proxmoxApiBaseUri.AbsoluteUri + "nodes/$($node.node)/syslog") `
                     -SkipCertificateCheck `
+                    -Body $body `
                     -WebSession $ProxmoxWebSession | Select-Object -ExpandProperty data    
                 }
                 else { # PS Desktop client
                     Invoke-RestMethod `
                     -Method Get `
-                    -Uri ($proxmoxApiBaseUri.AbsoluteUri + "nodes/$($node.node)/version") `
+                    -Uri ($proxmoxApiBaseUri.AbsoluteUri + "nodes/$($node.node)/syslog") `
+                    -Body $body `
                     -WebSession $ProxmoxWebSession | Select-Object -ExpandProperty data
                 }
                 

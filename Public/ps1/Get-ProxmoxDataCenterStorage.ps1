@@ -1,11 +1,19 @@
-function Get-ProxmoxUser {
+function Get-ProxmoxDataCenterStorage {
 
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName = 'All')]
     Param (
-        [Parameter(Position = 0)]
-        [ValidateNotNullOrEmpty()]
-        [String[]]
-        $UserID
+        [Parameter(ParameterSetName = 'All')]
+        [Switch]
+        $All,
+        
+        [Parameter(ParameterSetName = 'Type')]
+        [ValidateSet('cephfs', 'cifs', 'dir', 'drbd', 'glusterfs', 'iscsi', 'iscsidirect', 'lvm', 'lvmthin', 'nfs', 'pbs', 'rbd', 'zfs', 'zfspool')]
+        [String]
+        $Type,
+
+        [Parameter(ParameterSetName = 'Name')]
+        [String]
+        $StorageId
     )
     begin { 
 
@@ -19,36 +27,38 @@ function Get-ProxmoxUser {
             }
         
         }
+        $body = @{}
+        if ($PSBoundParameters['Type']) { $body.Add('type', $PSBoundParameters['Type']) }        
 
     }
     process {
 
-        if ($UserID) {
-            
-            $UserID | ForEach-Object {
+        if ($StorageId) {
+
+            $StorageId | ForEach-Object {
 
                 try {
 
                     if ($NoCertCheckPSCore) {
                         Invoke-RestMethod `
                         -Method Get `
-                        -Uri ($proxmoxApiBaseUri.AbsoluteUri + "access/users/$_") `
+                        -Uri ($proxmoxApiBaseUri.AbsoluteUri + "storage/$_") `
                         -SkipCertificateCheck `
-                        -WebSession $ProxmoxWebSession | Select-Object -ExpandProperty data    
+                        -WebSession $ProxmoxWebSession | Select-Object -ExpandProperty data
                     }
                     else {
                         Invoke-RestMethod `
                         -Method Get `
-                        -Uri ($proxmoxApiBaseUri.AbsoluteUri + "access/users/$_") `
+                        -Uri ($proxmoxApiBaseUri.AbsoluteUri + "storage/$_") `
                         -WebSession $ProxmoxWebSession | Select-Object -ExpandProperty data    
                     }
                     
                 }
                 catch {
-
+        
                     throw $_.Exception
-
-                }
+        
+                }        
 
             }
 
@@ -60,14 +70,16 @@ function Get-ProxmoxUser {
                 if ($NoCertCheckPSCore) {
                     Invoke-RestMethod `
                     -Method Get `
-                    -Uri ($proxmoxApiBaseUri.AbsoluteUri + 'access/users') `
+                    -Uri ($proxmoxApiBaseUri.AbsoluteUri + 'storage') `
+                    -Body $body `
                     -SkipCertificateCheck `
-                    -WebSession $ProxmoxWebSession | Select-Object -ExpandProperty data    
+                    -WebSession $ProxmoxWebSession | Select-Object -ExpandProperty data
                 }
                 else {
                     Invoke-RestMethod `
                     -Method Get `
-                    -Uri ($proxmoxApiBaseUri.AbsoluteUri + 'access/users') `
+                    -Uri ($proxmoxApiBaseUri.AbsoluteUri + 'storage') `
+                    -Body $body `
                     -WebSession $ProxmoxWebSession | Select-Object -ExpandProperty data    
                 }
                 

@@ -1,4 +1,4 @@
-function Get-ProxmoxNode {
+function Get-ProxmoxApiVersion {
 
     [CmdletBinding()]
     Param ()
@@ -23,14 +23,14 @@ function Get-ProxmoxNode {
             if ($NoCertCheckPSCore) {
                 Invoke-RestMethod `
                 -Method Get `
-                -Uri ($proxmoxApiBaseUri.AbsoluteUri + 'nodes') `
+                -Uri ($proxmoxApiBaseUri.AbsoluteUri + 'version') `
                 -SkipCertificateCheck `
                 -WebSession $ProxmoxWebSession | Select-Object -ExpandProperty data
             }
             else {
                 Invoke-RestMethod `
                 -Method Get `
-                -Uri ($proxmoxApiBaseUri.AbsoluteUri + 'nodes') `
+                -Uri ($proxmoxApiBaseUri.AbsoluteUri + 'version') `
                 -WebSession $ProxmoxWebSession | Select-Object -ExpandProperty data    
             }
             

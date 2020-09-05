@@ -2,37 +2,70 @@ function Open-ProxmoxNodeSpiceProxy {
 
     [CmdletBinding()]
     Param (
-        [Parameter(Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [String]
-        $ProxmoxNodeName,
+        [Parameter(
+            Mandatory = $true,
+            Position = 0,
+            ValueFromPipeline = $true
+        )]
+        [PSObject]
+        $ProxmoxNode,
 
-        [Parameter(Mandatory = $true)]
+        [Parameter(
+            Mandatory = $true,
+            Position = 1
+        )]
         [Int]
         $VMID,
 
-        [Parameter(Mandatory = $true)]
+        [Parameter(
+            Mandatory = $true,
+            Position = 2
+        )]
         [ValidateNotNullOrEmpty()]
         [String]
         $OutFilePath,
 
-        [Parameter()]
+        [Parameter(Position = 3)]
         [ValidateNotNullOrEmpty()]
         [String]
         $SpiceProxy = $ProxmoxApiBaseUri.Host
     )
-    begin { if ($SkipProxmoxCertificateCheck) { Disable-CertificateValidation } }
+    begin { 
+
+        if ($SkipProxmoxCertificateCheck) {
+            
+            if ($PSVersionTable.PSEdition -ne 'Core') {
+                Disable-CertificateValidation # Custom function to bypass X.509 cert checks
+            }
+            else {
+                $NoCertCheckPSCore = $true
+            }
+        
+        }
+
+    }
     process {
 
         $body = @{proxy = $SpiceProxy}
         try {
 
-            $spiceClientObject = Invoke-RestMethod `
-            -Method Post `
-            -Uri ($proxmoxApiBaseUri.AbsoluteUri + "nodes/$ProxmoxNodeName/qemu/$VMID/spiceproxy") `
-            -Headers $ProxmoxCsrfToken `
-            -Body $body `
-            -WebSession $ProxmoxWebSession | Select-Object -ExpandProperty data
+            if ($NoCertCheckPSCore) {
+                $spiceClientObject = Invoke-RestMethod `
+                -Method Post `
+                -Uri ($proxmoxApiBaseUri.AbsoluteUri + "nodes/$($ProxmoxNode.node)/qemu/$VMID/spiceproxy") `
+                -SkipCertificateCheck `
+                -Headers $ProxmoxCsrfToken `
+                -Body $body `
+                -WebSession $ProxmoxWebSession | Select-Object -ExpandProperty data    
+            }
+            else {
+                $spiceClientObject = Invoke-RestMethod `
+                -Method Post `
+                -Uri ($proxmoxApiBaseUri.AbsoluteUri + "nodes/$($ProxmoxNode.node)/qemu/$VMID/spiceproxy") `
+                -Headers $ProxmoxCsrfToken `
+                -Body $body `
+                -WebSession $ProxmoxWebSession | Select-Object -ExpandProperty data    
+            }
             
             # Array of strings that will form the virt-viewer INI key=value file
             [array]$content = '[virt-viewer]'
@@ -41,7 +74,7 @@ function Open-ProxmoxNodeSpiceProxy {
             $content | Out-File $OutFilePath -Encoding ascii -Force -ErrorAction Stop
             
             Start-Job -ScriptBlock {Invoke-Item $args} -ArgumentList $OutFilePath | Out-Null
-            
+
         }
         catch {
 
@@ -50,6 +83,6 @@ function Open-ProxmoxNodeSpiceProxy {
         }
 
     }
-    end { if ($SkipProxmoxCertificateCheck) { Enable-CertificateValidation } }
+    end { if ($SkipProxmoxCertificateCheck -and -not $NoCertCheckPSCore) { Enable-CertificateValidation } }
 
 }

@@ -1,4 +1,4 @@
-function Get-ProxmoxNodeVersion {
+function Get-ProxmoxNodeCpuInfo {
 
     [CmdletBinding()]
     Param (
@@ -34,14 +34,14 @@ function Get-ProxmoxNodeVersion {
                 if ($NoCertCheckPSCore) { # PS Core client                    
                     Invoke-RestMethod `
                     -Method Get `
-                    -Uri ($proxmoxApiBaseUri.AbsoluteUri + "nodes/$($node.node)/version") `
+                    -Uri ($proxmoxApiBaseUri.AbsoluteUri + "nodes/$($node.node)/cpu") `
                     -SkipCertificateCheck `
                     -WebSession $ProxmoxWebSession | Select-Object -ExpandProperty data    
                 }
                 else { # PS Desktop client
                     Invoke-RestMethod `
                     -Method Get `
-                    -Uri ($proxmoxApiBaseUri.AbsoluteUri + "nodes/$($node.node)/version") `
+                    -Uri ($proxmoxApiBaseUri.AbsoluteUri + "nodes/$($node.node)/cpu") `
                     -WebSession $ProxmoxWebSession | Select-Object -ExpandProperty data
                 }
                 
