@@ -1,22 +1,9 @@
-# Author: Benjamin Heater
-
-#region Import Scripts
 $publicFunctions = Get-ChildItem -Path "$PSScriptRoot\Public\ps1"
 $privateFunctions = Get-ChildItem -Path "$PSScriptRoot\Private\ps1"
+$moduleManifest = "$PSScriptRoot\PSProxmox.psd1"
 $publicFunctions | ForEach-Object { . $_.FullName }
 $privateFunctions | ForEach-Object { . $_.FullName }
-#endregion Import Scripts
 
-
-if (-not $aliases) { $aliases = "*" }
-try {
-    Update-ModuleManifest -Path "$PSScriptRoot\PSProxmox.psd1" -FunctionsToExport $publicFunctions.BaseName -AliasesToExport $aliases
-}
-catch {
-    Out-Null
-}
-
-#region Export Public Functions and Aliases
 $aliases = @()
 $publicFunctions | ForEach-Object { # Export all of the public functions from this module
     
@@ -36,4 +23,11 @@ $publicFunctions | ForEach-Object { # Export all of the public functions from th
     }
 
 }
-#endregion Export Public Functions and Aliases
+
+if (-not $aliases) { $aliases = "*" }
+try {
+    Update-ModuleManifest -Path $moduleManifest -FunctionsToExport $publicFunctions.BaseName -AliasesToExport $aliases
+}
+catch {
+    Out-Null
+}
