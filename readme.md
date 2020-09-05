@@ -3,7 +3,7 @@ A PowerShell module for interfacing with the Proxmox JSON API
 
 ## Module Design
 ```
-PSProxox/
+PSProxmox/
 |___Public/ps1/
 |___Private/ps1/
 PSProxmox.psd1
