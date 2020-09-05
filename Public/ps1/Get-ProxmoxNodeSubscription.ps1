@@ -28,20 +28,20 @@ function Get-ProxmoxNodeSubscription {
 
         $ProxmoxNode | ForEach-Object {
             
-            $node = $_
+            $uri = $proxmoxApiBaseUri.AbsoluteUri + "nodes/$($_.node)/subscription"
             try {
                 
                 if ($NoCertCheckPSCore) { # PS Core client                    
                     Invoke-RestMethod `
                     -Method Get `
-                    -Uri ($proxmoxApiBaseUri.AbsoluteUri + "nodes/$($node.node)/subscription") `
+                    -Uri $uri `
                     -SkipCertificateCheck `
                     -WebSession $ProxmoxWebSession | Select-Object -ExpandProperty data    
                 }
                 else { # PS Desktop client
                     Invoke-RestMethod `
                     -Method Get `
-                    -Uri ($proxmoxApiBaseUri.AbsoluteUri + "nodes/$($node.node)/subscription") `
+                    -Uri $uri `
                     -WebSession $ProxmoxWebSession | Select-Object -ExpandProperty data
                 }
                 

@@ -19,6 +19,7 @@ function Get-ProxmoxUser {
             }
         
         }
+        $uri = $proxmoxApiBaseUri.AbsoluteUri + 'access/users'
 
     }
     process {
@@ -27,19 +28,20 @@ function Get-ProxmoxUser {
             
             $UserID | ForEach-Object {
 
+                $uri = $uri + '/' + $_
                 try {
 
                     if ($NoCertCheckPSCore) {
                         Invoke-RestMethod `
                         -Method Get `
-                        -Uri ($proxmoxApiBaseUri.AbsoluteUri + "access/users/$_") `
+                        -Uri $uri `
                         -SkipCertificateCheck `
                         -WebSession $ProxmoxWebSession | Select-Object -ExpandProperty data    
                     }
                     else {
                         Invoke-RestMethod `
                         -Method Get `
-                        -Uri ($proxmoxApiBaseUri.AbsoluteUri + "access/users/$_") `
+                        -Uri $uri `
                         -WebSession $ProxmoxWebSession | Select-Object -ExpandProperty data    
                     }
                     
@@ -60,14 +62,14 @@ function Get-ProxmoxUser {
                 if ($NoCertCheckPSCore) {
                     Invoke-RestMethod `
                     -Method Get `
-                    -Uri ($proxmoxApiBaseUri.AbsoluteUri + 'access/users') `
+                    -Uri $uri `
                     -SkipCertificateCheck `
                     -WebSession $ProxmoxWebSession | Select-Object -ExpandProperty data    
                 }
                 else {
                     Invoke-RestMethod `
                     -Method Get `
-                    -Uri ($proxmoxApiBaseUri.AbsoluteUri + 'access/users') `
+                    -Uri $uri `
                     -WebSession $ProxmoxWebSession | Select-Object -ExpandProperty data    
                 }
                 

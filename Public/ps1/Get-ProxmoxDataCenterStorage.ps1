@@ -28,7 +28,9 @@ function Get-ProxmoxDataCenterStorage {
         
         }
         $body = @{}
-        if ($PSBoundParameters['Type']) { $body.Add('type', $PSBoundParameters['Type']) }        
+        if ($PSBoundParameters['Type']) { $body.Add('type', $PSBoundParameters['Type']) }
+        $uri = $proxmoxApiBaseUri.AbsoluteUri + 'storage'
+            
 
     }
     process {
@@ -37,19 +39,20 @@ function Get-ProxmoxDataCenterStorage {
 
             $StorageId | ForEach-Object {
 
+                $uri = $uri + '/' + $_
                 try {
 
                     if ($NoCertCheckPSCore) {
                         Invoke-RestMethod `
                         -Method Get `
-                        -Uri ($proxmoxApiBaseUri.AbsoluteUri + "storage/$_") `
+                        -Uri $uri `
                         -SkipCertificateCheck `
                         -WebSession $ProxmoxWebSession | Select-Object -ExpandProperty data
                     }
                     else {
                         Invoke-RestMethod `
                         -Method Get `
-                        -Uri ($proxmoxApiBaseUri.AbsoluteUri + "storage/$_") `
+                        -Uri $uri `
                         -WebSession $ProxmoxWebSession | Select-Object -ExpandProperty data    
                     }
                     

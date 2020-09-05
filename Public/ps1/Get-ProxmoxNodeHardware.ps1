@@ -33,8 +33,7 @@ function Get-ProxmoxNodeHardware {
 
         $ProxmoxNode | ForEach-Object {
             
-            $node = $_
-            $uri = ($proxmoxApiBaseUri.AbsoluteUri + "nodes/$($node.node)/hardware/$Type")
+            $uri = $proxmoxApiBaseUri.AbsoluteUri + "nodes/$($_.node)/hardware/$Type"
             try {
                 
                 if ($NoCertCheckPSCore) { # PS Core client                    

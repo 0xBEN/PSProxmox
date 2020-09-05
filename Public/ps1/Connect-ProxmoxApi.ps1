@@ -85,6 +85,7 @@ function Connect-ProxmoxApi {
         }
 
         [System.Uri]$proxmoxApiBaseUri = $ServerUri.AbsoluteUri + 'api2/json/'
+        $uri = $proxmoxApiBaseUri.AbsoluteUri + 'access/ticket'
 
     }
     process {
@@ -94,7 +95,7 @@ function Connect-ProxmoxApi {
             if ($NoCertCheckPSCore) {
                 $apiCall = Invoke-RestMethod `
                 -Method Post `
-                -Uri ($proxmoxApiBaseUri.AbsoluteUri + 'access/ticket') `
+                -Uri $uri `
                 -SkipCertificateCheck `
                 -AllowUnencryptedAuthentication `
                 -Body $body `
@@ -103,7 +104,7 @@ function Connect-ProxmoxApi {
             else {
                 $apiCall = Invoke-RestMethod `
                 -Method Post `
-                -Uri ($proxmoxApiBaseUri.AbsoluteUri + 'access/ticket') `
+                -Uri $uri `
                 -Body $body `
                 -SessionVariable pveTicket    
             }

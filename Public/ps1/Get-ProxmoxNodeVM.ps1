@@ -32,24 +32,25 @@ function Get-ProxmoxNodeVM {
 
         $ProxmoxNode | ForEach-Object {
             
-            $node = $_
+            $uri = $proxmoxApiBaseUri.AbsoluteUri + "nodes/$($node.node)/qemu"
             if ($VMID) {
 
                 $VMID | ForEach-Object {
                     
+                    $uri = $uri + '/' + $_
                     try {
 
                         if ($NoCertCheckPSCore) {
                             Invoke-RestMethod `
                             -Method Get `
-                            -Uri ($proxmoxApiBaseUri.AbsoluteUri + "nodes/$($node.node)/qemu/$_/status/current") `
+                            -Uri $uri `
                             -SkipCertificateCheck `
                             -WebSession $ProxmoxWebSession | Select-Object -ExpandProperty data
                         }
                         else {
                             Invoke-RestMethod `
                             -Method Get `
-                            -Uri ($proxmoxApiBaseUri.AbsoluteUri + "nodes/$($node.node)/qemu/$_/status/current") `
+                            -Uri $uri `
                             -WebSession $ProxmoxWebSession | Select-Object -ExpandProperty data
                         }
                         
@@ -70,14 +71,14 @@ function Get-ProxmoxNodeVM {
                     if ($NoCertCheckPSCore) {
                         Invoke-RestMethod `
                         -Method Get `
-                        -Uri ($proxmoxApiBaseUri.AbsoluteUri + "nodes/$($node.node)/qemu") `
+                        -Uri $uri `
                         -SkipCertificateCheck `
                         -WebSession $ProxmoxWebSession | Select-Object -ExpandProperty data
                     }
                     else {
                         Invoke-RestMethod `
                         -Method Get `
-                        -Uri ($proxmoxApiBaseUri.AbsoluteUri + "nodes/$($node.node)/qemu") `
+                        -Uri $uri `
                         -WebSession $ProxmoxWebSession | Select-Object -ExpandProperty data
                     }
                     

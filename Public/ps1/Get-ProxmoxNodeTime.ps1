@@ -27,13 +27,13 @@ function Get-ProxmoxNodeTime {
 
         $ProxmoxNode | ForEach-Object {
 
-            $node = $_
+            $uri = $proxmoxApiBaseUri.AbsoluteUri + "nodes/$($_.node)/time"
             try {
 
                 if ($NoCertCheckPSCore) {
                     $data = Invoke-RestMethod `
                     -Method Get `
-                    -Uri ($proxmoxApiBaseUri.AbsoluteUri + "nodes/$($node.node)/time") `
+                    -Uri $uri `
                     -SkipCertificateCheck `
                     -WebSession $ProxmoxWebSession | Select-Object -ExpandProperty data
                     $data.time = $epoch.AddSeconds($data.time)
@@ -43,7 +43,7 @@ function Get-ProxmoxNodeTime {
                 else {
                     $data = Invoke-RestMethod `
                     -Method Get `
-                    -Uri ($proxmoxApiBaseUri.AbsoluteUri + "nodes/$($node.node)/time") `
+                    -Uri $uri `
                     -WebSession $ProxmoxWebSession | Select-Object -ExpandProperty data
                     $data.time = $epoch.AddSeconds($data.time)
                     $data.localtime = $epoch.AddSeconds($data.localtime)

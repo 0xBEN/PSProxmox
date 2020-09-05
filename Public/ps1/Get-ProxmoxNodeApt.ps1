@@ -72,13 +72,13 @@ function Get-ProxmoxNodeApt {
             if ($PSCmdlet.ParameterSetName -eq 'Changelog') {
                 $body.Add('name', $PSBoundParameters['PackageName'])
                 if ($PSBoundParameters['Version']) { $body.Add('version', $PSBoundParameters['Version']) }
-                $uri = ($proxmoxApiBaseUri.AbsoluteUri + "nodes/$($node.node)/apt/changelog")
+                $uri = $proxmoxApiBaseUri.AbsoluteUri + "nodes/$($node.node)/apt/changelog"
             }
             elseif ($PSCmdlet.ParameterSetName -eq 'Update') {
-                $uri = ($proxmoxApiBaseUri.AbsoluteUri + "nodes/$($node.node)/apt/update")
+                $uri = $proxmoxApiBaseUri.AbsoluteUri + "nodes/$($node.node)/apt/update"
             }
             else {
-                $uri = ($proxmoxApiBaseUri.AbsoluteUri + "nodes/$($node.node)/apt/versions")
+                $uri = $proxmoxApiBaseUri.AbsoluteUri + "nodes/$($node.node)/apt/versions"
             }
 
             try {

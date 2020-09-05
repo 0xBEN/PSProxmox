@@ -14,6 +14,7 @@ function Get-ProxmoxNode {
             }
         
         }
+        $uri = $proxmoxApiBaseUri.AbsoluteUri + 'nodes'
 
     }
     process {
@@ -23,14 +24,14 @@ function Get-ProxmoxNode {
             if ($NoCertCheckPSCore) {
                 Invoke-RestMethod `
                 -Method Get `
-                -Uri ($proxmoxApiBaseUri.AbsoluteUri + 'nodes') `
+                -Uri $uri `
                 -SkipCertificateCheck `
                 -WebSession $ProxmoxWebSession | Select-Object -ExpandProperty data
             }
             else {
                 Invoke-RestMethod `
                 -Method Get `
-                -Uri ($proxmoxApiBaseUri.AbsoluteUri + 'nodes') `
+                -Uri $uri `
                 -WebSession $ProxmoxWebSession | Select-Object -ExpandProperty data    
             }
             

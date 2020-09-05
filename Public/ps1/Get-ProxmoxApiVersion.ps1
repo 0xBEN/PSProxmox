@@ -14,6 +14,7 @@ function Get-ProxmoxApiVersion {
             }
         
         }
+        $uri = $proxmoxApiBaseUri.AbsoluteUri + 'version'
 
     }
     process {
@@ -23,14 +24,14 @@ function Get-ProxmoxApiVersion {
             if ($NoCertCheckPSCore) {
                 Invoke-RestMethod `
                 -Method Get `
-                -Uri ($proxmoxApiBaseUri.AbsoluteUri + 'version') `
+                -Uri $uri `
                 -SkipCertificateCheck `
                 -WebSession $ProxmoxWebSession | Select-Object -ExpandProperty data
             }
             else {
                 Invoke-RestMethod `
                 -Method Get `
-                -Uri ($proxmoxApiBaseUri.AbsoluteUri + 'version') `
+                -Uri $uri `
                 -WebSession $ProxmoxWebSession | Select-Object -ExpandProperty data    
             }
             

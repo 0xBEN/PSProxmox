@@ -56,13 +56,13 @@ function Get-ProxmoxNodeSyslog {
 
         $ProxmoxNode | ForEach-Object {
             
-            $node = $_
+            $uri = $proxmoxApiBaseUri.AbsoluteUri + "nodes/$($_.node)/syslog"
             try {
                 
                 if ($NoCertCheckPSCore) { # PS Core client                    
                     Invoke-RestMethod `
                     -Method Get `
-                    -Uri ($proxmoxApiBaseUri.AbsoluteUri + "nodes/$($node.node)/syslog") `
+                    -Uri $uri `
                     -SkipCertificateCheck `
                     -Body $body `
                     -WebSession $ProxmoxWebSession | Select-Object -ExpandProperty data    
@@ -70,7 +70,7 @@ function Get-ProxmoxNodeSyslog {
                 else { # PS Desktop client
                     Invoke-RestMethod `
                     -Method Get `
-                    -Uri ($proxmoxApiBaseUri.AbsoluteUri + "nodes/$($node.node)/syslog") `
+                    -Uri $uri `
                     -Body $body `
                     -WebSession $ProxmoxWebSession | Select-Object -ExpandProperty data
                 }

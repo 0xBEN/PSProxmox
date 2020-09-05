@@ -42,6 +42,7 @@ function Open-ProxmoxNodeSpiceProxy {
             }
         
         }
+        $uri = $proxmoxApiBaseUri.AbsoluteUri + "nodes/$($ProxmoxNode.node)/qemu/$VMID/spiceproxy"
 
     }
     process {
@@ -52,7 +53,7 @@ function Open-ProxmoxNodeSpiceProxy {
             if ($NoCertCheckPSCore) {
                 $spiceClientObject = Invoke-RestMethod `
                 -Method Post `
-                -Uri ($proxmoxApiBaseUri.AbsoluteUri + "nodes/$($ProxmoxNode.node)/qemu/$VMID/spiceproxy") `
+                -Uri $uri `
                 -SkipCertificateCheck `
                 -Headers $ProxmoxCsrfToken `
                 -Body $body `
@@ -61,7 +62,7 @@ function Open-ProxmoxNodeSpiceProxy {
             else {
                 $spiceClientObject = Invoke-RestMethod `
                 -Method Post `
-                -Uri ($proxmoxApiBaseUri.AbsoluteUri + "nodes/$($ProxmoxNode.node)/qemu/$VMID/spiceproxy") `
+                -Uri $uri `
                 -Headers $ProxmoxCsrfToken `
                 -Body $body `
                 -WebSession $ProxmoxWebSession | Select-Object -ExpandProperty data    

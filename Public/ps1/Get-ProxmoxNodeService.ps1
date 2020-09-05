@@ -33,24 +33,25 @@ function Get-ProxmoxNodeService {
 
         $ProxmoxNode | ForEach-Object {
             
-            $node = $_
+            $uri = $proxmoxApiBaseUri.AbsoluteUri + "nodes/$($_.node)/services"
             if ($ServiceName) {
 
                 $ServiceName | ForEach-Object {
 
+                    $uri = $uri + '/' + $_
                     try {
                     
                         if ($NoCertCheckPSCore) { # PS Core client                    
                             Invoke-RestMethod `
                             -Method Get `
-                            -Uri ($proxmoxApiBaseUri.AbsoluteUri + "nodes/$($node.node)/services/$_/state") `
+                            -Uri $uri `
                             -SkipCertificateCheck `
                             -WebSession $ProxmoxWebSession | Select-Object -ExpandProperty data    
                         }
                         else { # PS Desktop client
                             Invoke-RestMethod `
                             -Method Get `
-                            -Uri ($proxmoxApiBaseUri.AbsoluteUri + "nodes/$($node.node)/services/$_/state") `
+                            -Uri $uri `
                             -WebSession $ProxmoxWebSession | Select-Object -ExpandProperty data
                         }
                         
@@ -71,14 +72,14 @@ function Get-ProxmoxNodeService {
                     if ($NoCertCheckPSCore) { # PS Core client                    
                         Invoke-RestMethod `
                         -Method Get `
-                        -Uri ($proxmoxApiBaseUri.AbsoluteUri + "nodes/$($node.node)/services") `
+                        -Uri $uri `
                         -SkipCertificateCheck `
                         -WebSession $ProxmoxWebSession | Select-Object -ExpandProperty data    
                     }
                     else { # PS Desktop client
                         Invoke-RestMethod `
                         -Method Get `
-                        -Uri ($proxmoxApiBaseUri.AbsoluteUri + "nodes/$($node.node)/services") `
+                        -Uri $uri `
                         -WebSession $ProxmoxWebSession | Select-Object -ExpandProperty data
                     }
                     
