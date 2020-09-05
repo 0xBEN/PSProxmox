@@ -32,7 +32,7 @@ function Get-ProxmoxNodeVM {
 
         $ProxmoxNode | ForEach-Object {
             
-            $uri = $proxmoxApiBaseUri.AbsoluteUri + "nodes/$($node.node)/qemu"
+            $uri = $proxmoxApiBaseUri.AbsoluteUri + "nodes/$($_.node)/qemu"
             if ($VMID) {
 
                 $VMID | ForEach-Object {
