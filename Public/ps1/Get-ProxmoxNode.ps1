@@ -62,7 +62,7 @@ function Get-ProxmoxNode {
                     return $ProxmoxNode
                     
                 }  
-                      
+
             }
 
         }

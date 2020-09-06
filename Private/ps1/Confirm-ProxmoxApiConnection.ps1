@@ -28,8 +28,10 @@ function Confirm-ProxmoxApiConnection {
         }
         catch {
 
-            throw $_.Exception
-
+            if ($_.Response.StatusDescription -like '*invalid PVE ticket*') { 
+                throw "User not connected to Proxmox API." 
+            }
+            
         }
 
     }
