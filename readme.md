@@ -18,7 +18,7 @@ Each function gets its own `.ps1` file. By doing so, the code is lean, easier to
 If you look at the `.psm1` script module file, you will see how this file orchestrates the updating of the module manifest and the exporting of **public** functions.
 
 ## Naming Scheme
-The function uses PowerShell-approved verbs following the Proxmox API endpoint contexts:
+All functions use PowerShell-approved verbs following the Proxmox API endpoint contexts:
 - **Cluster** (aka Datacenter): Example `Get-ProxmoxDataCenterLog`
 - **Node** (a server in a cluster): Example `Open-ProxmoxNodeSpiceProxy`
 - A few exceptions for certain API endpoints, but the naming is clear in the function: Example `Get-ProxmoxUser`
