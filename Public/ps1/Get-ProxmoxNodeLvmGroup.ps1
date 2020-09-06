@@ -7,7 +7,7 @@ function Get-ProxmoxNodeLvmGroup {
             Position = 0,
             ValueFromPipeline = $true
         )]
-        [PSObject[]]
+        [ProxmoxNode[]]
         $ProxmoxNode
     )
     begin { 

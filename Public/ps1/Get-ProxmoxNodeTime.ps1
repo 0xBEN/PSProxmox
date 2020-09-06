@@ -7,7 +7,7 @@ function Get-ProxmoxNodeTime {
             Position = 0,
             ValueFromPipeline = $true
         )]
-        [PSObject[]]
+        [ProxmoxNode[]]
         $ProxmoxNode
     )
     begin { 

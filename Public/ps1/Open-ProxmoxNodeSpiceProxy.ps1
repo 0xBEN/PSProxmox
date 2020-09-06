@@ -7,7 +7,7 @@ function Open-ProxmoxNodeSpiceProxy {
             Position = 0,
             ValueFromPipeline = $true
         )]
-        [PSObject]
+        [ProxmoxNode]
         $ProxmoxNode,
 
         [Parameter(

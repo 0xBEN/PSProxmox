@@ -7,7 +7,7 @@ function Get-ProxmoxNodeVM {
             Position = 0,
             ValueFromPipeline = $true
         )]
-        [PSObject[]]
+        [ProxmoxNode[]]
         $ProxmoxNode,
 
         [Parameter(Position = 1)]

@@ -7,7 +7,7 @@ function Get-ProxmoxNodeHostsFile {
             Position = 0,
             ValueFromPipeline = $true
         )]
-        [PSObject[]]
+        [ProxmoxNode[]]
         $ProxmoxNode
     )
     begin { 

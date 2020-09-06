@@ -7,7 +7,7 @@ function Get-ProxmoxNodeCpuInfo {
             Position = 0,
             ValueFromPipeline = $true
         )]
-        [PSObject[]]
+        [ProxmoxNode[]]
         $ProxmoxNode
     )
     begin { 

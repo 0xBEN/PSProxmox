@@ -19,14 +19,14 @@ function Get-ProxmoxNode {
         try {
 
             if ($NoCertCheckPSCore) {
-                Invoke-RestMethod `
+                $node = Invoke-RestMethod `
                 -Method Get `
                 -Uri $uri `
                 -SkipCertificateCheck `
                 -WebSession $ProxmoxWebSession | Select-Object -ExpandProperty data
             }
             else {
-                Invoke-RestMethod `
+                $node = Invoke-RestMethod `
                 -Method Get `
                 -Uri $uri `
                 -WebSession $ProxmoxWebSession | Select-Object -ExpandProperty data    
@@ -40,6 +40,34 @@ function Get-ProxmoxNode {
         }
 
     }
-    end { if ($SkipProxmoxCertificateCheck -and -not $NoCertCheckPSCore) { Enable-CertificateValidation } }
+    end { 
+        
+        if ($SkipProxmoxCertificateCheck -and -not $NoCertCheckPSCore) { Enable-CertificateValidation } 
+        if ($node) { 
+
+            $node | ForEach-Object {
+
+                $Node | ForEach-Object {
+
+                    $ProxmoxNode = New-Object ProxmoxNode
+                    $ProxmoxNode.node = $_.node
+                    $ProxmoxNode.status = $_.status
+                    $ProxmoxNode.cpu = $_.cpu
+                    $ProxmoxNode.level = $_.level
+                    $ProxmoxNode.maxcpu = $_.maxcpu
+                    $ProxmoxNode.maxmem = $_.maxmem
+                    $ProxmoxNode.mem = $_.mem
+                    $ProxmoxNode.ssl_fingerprint = $_.ssl_fingerprint
+                    $ProxmoxNode.uptime = $_.uptime
+                    return $ProxmoxNode
+                    
+                }  
+                      
+            }
+
+        }
+        else { return }
+        
+    }
 
 }

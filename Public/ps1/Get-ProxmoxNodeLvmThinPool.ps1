@@ -7,7 +7,7 @@ function Get-ProxmoxNodeLvmThinPool {
             Position = 0,
             ValueFromPipeline = $true
         )]
-        [PSObject[]]
+        [ProxmoxNode[]]
         $ProxmoxNode
     )
     begin { 

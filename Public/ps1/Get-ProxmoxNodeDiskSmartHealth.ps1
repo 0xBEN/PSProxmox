@@ -7,7 +7,7 @@ function Get-ProxmoxNodeDiskSmartHealth {
             Position = 0,
             ValueFromPipeline = $true
         )]
-        [PSObject[]]
+        [ProxmoxNode[]]
         $ProxmoxNode,
 
         [Parameter(Mandatory = $true)]

@@ -7,7 +7,7 @@ function Get-ProxmoxNodeZfsPool {
             Position = 0,
             ValueFromPipeline = $true
         )]
-        [PSObject[]]
+        [ProxmoxNode[]]
         $ProxmoxNode,
 
         [Parameter()]

@@ -26,7 +26,7 @@ function Get-ProxmoxNodeJournal {
             ValueFromPipeline = $true,
             ParameterSetName = 'Default'
         )]
-        [PSObject[]]
+        [ProxmoxNode[]]
         $ProxmoxNode,
         
         [Parameter(ParameterSetName = 'Tail')]

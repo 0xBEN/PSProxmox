@@ -7,7 +7,7 @@ function Get-ProxmoxNodeCertificate {
             Position = 0,
             ValueFromPipeline = $true
         )]
-        [PSObject[]]
+        [ProxmoxNode[]]
         $ProxmoxNode
     )
     begin { 

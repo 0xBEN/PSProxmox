@@ -1,8 +1,10 @@
 $publicFunctions = Get-ChildItem -Path "$PSScriptRoot\Public\ps1"
 $privateFunctions = Get-ChildItem -Path "$PSScriptRoot\Private\ps1"
+$classes = Get-ChildItem -Path "$PSScriptRoot\Classes\ps1"
 $moduleManifest = "$PSScriptRoot\PSProxmox.psd1"
 $publicFunctions | ForEach-Object { . $_.FullName }
 $privateFunctions | ForEach-Object { . $_.FullName }
+$classes | ForEach-Object { . $_.FullName }
 
 $aliases = @()
 $publicFunctions | ForEach-Object { # Export all of the public functions from this module

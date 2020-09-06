@@ -21,7 +21,7 @@ function Get-ProxmoxNodeNetwork {
             ValueFromPipeline = $true,
             ParameterSetName = 'Default'
         )]
-        [PSObject[]]
+        [ProxmoxNode[]]
         $ProxmoxNode,
 
         [Parameter(ParameterSetName = 'Type')]

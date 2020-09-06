@@ -20,7 +20,7 @@ function Get-ProxmoxNodeAptPackage {
             ValueFromPipeline = $true,
             ParameterSetName = 'Versions'
         )]
-        [PSObject[]]
+        [ProxmoxNode[]]
         $ProxmoxNode,
 
         [Parameter(ParameterSetName = 'Changelog')]

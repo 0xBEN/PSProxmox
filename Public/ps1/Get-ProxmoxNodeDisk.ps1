@@ -7,7 +7,7 @@ function Get-ProxmoxNodeDisk {
             Position = 0,
             ValueFromPipeline = $true
         )]
-        [PSObject[]]
+        [ProxmoxNode[]]
         $ProxmoxNode
     )
     begin { 

@@ -7,7 +7,7 @@ function Get-ProxmoxNodeAppliance {
             Position = 0,
             ValueFromPipeline = $true
         )]
-        [PSObject[]]
+        [ProxmoxNode[]]
         $ProxmoxNode
     )
     begin { 
