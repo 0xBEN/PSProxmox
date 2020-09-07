@@ -4,6 +4,7 @@ function Confirm-ProxmoxApiConnection {
     Param ()
     process {
 
+        $VerbosePreference = 'SilentlyContinue'
         if (-not $ProxmoxWebSession) {
             throw "User not authenticated to Proxmox API."
         }

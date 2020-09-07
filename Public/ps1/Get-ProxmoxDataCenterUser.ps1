@@ -1,4 +1,4 @@
-function Get-ProxmoxUser {
+function Get-ProxmoxDataCenterUser {
 
     [CmdletBinding()]
     Param (
