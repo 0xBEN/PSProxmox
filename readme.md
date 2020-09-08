@@ -22,9 +22,8 @@ If you look at the `.psm1` script module file, you will see how this file orches
 
 ## Naming Scheme
 All functions use PowerShell-approved verbs following the Proxmox API endpoint contexts:
-- **Cluster** (aka Datacenter): Example `Get-ProxmoxDataCenterLog`
-- **Node** (a server in a cluster): Example `Open-ProxmoxNodeSpiceProxy`
-- A few exceptions for certain API endpoints, but the naming is clear in the function: Example `Get-ProxmoxUser`
+- **Cluster** (aka Datacenter): Example `Get-PVEClusterLog`
+- **Node** (a server in a cluster): Example `Open-PVENodeSpiceProxy`
 
 ## Orchestrating I/O
 Where applicable, functions are designed to take **pipeline input** of an **object**.
@@ -40,6 +39,6 @@ Param (
 )
 ```
 Using `Get-ProxmoxNodeVM` as an example, this function takes the mandatory parameter `-ProxmoxNode` explicitly or as pipeline input. Effectively you could execute this function in the following ways:
-- `Get-ProxmoxNode | Where-Object {$_.node -eq 'NodeName'} | Get-ProxmoxNodeVM`
-- `$node | Get-ProxmoxNodeVM`
-- `Get-ProxmoxNodeVM -ProxmoxNode $node`
+- `Get-PVENode | Where-Object {$_.node -eq 'NodeName'} | Get-PVENodeVM`
+- `$node | Get-PVENodeVM`
+- `Get-PVENodeVM -ProxmoxNode $node`
