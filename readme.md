@@ -38,7 +38,7 @@ Param (
     $ProxmoxNode
 )
 ```
-Using `Get-ProxmoxNodeVM` as an example, this function takes the mandatory parameter `-ProxmoxNode` explicitly or as pipeline input. Effectively you could execute this function in the following ways:
+Using `Get-PVENodeVM` as an example, this function takes the mandatory parameter `-ProxmoxNode` explicitly or as pipeline input. Effectively you could execute this function in the following ways:
 - `Get-PVENode | Where-Object {$_.node -eq 'NodeName'} | Get-PVENodeVM`
 - `$node | Get-PVENodeVM`
 - `Get-PVENodeVM -ProxmoxNode $node`
