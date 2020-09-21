@@ -20,7 +20,7 @@ function Get-PVENodeVMOSInfo {
     begin { 
 
         try { Confirm-PveApiConnection }
-        catch { throw "Please connect to the Proxmox API using the command: Connect-ProxmoxApi" }
+        catch { throw $_ }
 
         if ($SkipProxmoxCertificateCheck) {            
             if ($PSVersionTable.PSEdition -ne 'Core') { Disable-CertificateValidation } # Custom function to bypass X.509 cert checks

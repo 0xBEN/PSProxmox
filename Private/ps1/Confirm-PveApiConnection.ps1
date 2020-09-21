@@ -5,9 +5,7 @@ function Confirm-PveApiConnection {
     process {
 
         $VerbosePreference = 'SilentlyContinue'
-        if (-not $ProxmoxWebSession) {
-            throw "User not authenticated to Proxmox API."
-        }
+        if (-not $ProxmoxWebSession) { throw "User not authenticated to Proxmox API." }
 
         $uri = $proxmoxApiBaseUri.AbsoluteUri + 'version'
         try {
@@ -29,9 +27,7 @@ function Confirm-PveApiConnection {
         }
         catch {
 
-            if ($_.Response.StatusDescription -like '*invalid PVE ticket*') { 
-                throw "User not connected to Proxmox API." 
-            }
+            throw $_
             
         }
 
