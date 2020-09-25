@@ -21,10 +21,11 @@ function Get-PVENodeVMOSInfo {
 
         $ProxmoxNode | ForEach-Object {
             
+            $node = $_
             $VMID | ForEach-Object {
 
                 try {
-                    Send-PveApiRequest -Method Get -Uri ($ProxmoxApiBaseUri.AbsoluteUri + "nodes/$($_.node)/qemu/$_/agent/get-osinfo/") | 
+                    Send-PveApiRequest -Method Get -Uri ($ProxmoxApiBaseUri.AbsoluteUri + "nodes/$($node.node)/qemu/$_/agent/get-osinfo/") | 
                     Select-Object -ExpandProperty data | Select-Object -ExpandProperty result
                 }
                 catch {
@@ -33,7 +34,7 @@ function Get-PVENodeVMOSInfo {
                         throw 'QEMU guest agent is not running'
                     }
                     else {
-                        $_ | Write-Error
+                        Write-Error -Exception $_.Exception
                     }
 
                 }
