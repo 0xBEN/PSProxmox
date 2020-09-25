@@ -94,9 +94,9 @@ function Connect-PVEApi {
         
         # Remove any module-scope variables in case the user is reauthenticating
         Remove-Variable `
-        -Name SkipProxmoxCertificateCheck, ProxmoxApiToken, ProxmoxApiBaseUri, SkipProxmoxCertificateCheck, ProxmoxCsrfToken `
-        -Force `
-        -ErrorAction SilentlyContinue | Out-Null
+        -Scope Script `
+        -Name ProxmoxWebSession, ProxmoxApiToken, ProxmoxApiBaseUri, SkipProxmoxCertificateCheck, ProxmoxCsrfToken `
+        -Force -ErrorAction SilentlyContinue | Out-Null
 
         # Setting the variables in this way allows them to be re-initialized upon new connections in the same shell
         if ($SkipCertificateValidation) {
