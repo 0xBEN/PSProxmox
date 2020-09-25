@@ -21,6 +21,11 @@ function Connect-PVEApi {
     System.Management.Automation.PSCredential
     This is the username@realm credential you will use to authenticate.
 
+    .PARAMETER ApiKey
+
+    System.String
+    Should be in the format of: PVEAPIToken=username@realm!tokenName=UUID
+
     .PARAMETER SkipCertificateValidation
     Switch
     Indicates the server's X509 certificate should not be validated.
@@ -42,13 +47,20 @@ function Connect-PVEApi {
         
     PSObject
     #>
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName = 'Credential')]
     Param (
 
         [Parameter(
             HelpMessage = 'The fully qualified URI of the server. Do not include the API path.',
             Mandatory = $true,
-            Position = 0
+            Position = 0,
+            ParameterSetName = 'Credential'
+        )]
+        [Parameter(
+            HelpMessage = 'The fully qualified URI of the server. Do not include the API path.',
+            Mandatory = $true,
+            Position = 0,
+            ParameterSetName = 'Token'
         )]
         [System.Uri]
         $ServerUri,
@@ -56,123 +68,107 @@ function Connect-PVEApi {
         [Parameter(
             HelpMessage = 'username@realm credential',
             Mandatory = $true,
-            Position =1
+            Position = 1,
+            ParameterSetName = 'Credential'
         )]
         [PSCredential]
         $ProxmoxCredential,
 
-        [Parameter()]
+        [Parameter(
+            HelpMessage = 'PVEAPIToken=username@realm!tokenName=UUID',
+            Mandatory = $true,
+            Position = 1,
+            ParameterSetName = 'Token'
+        )]
+        [ValidateNotNullOrEmpty()]
+        [String]
+        $ApiKey,
+
+        [Parameter(ParameterSetName = 'Credential')]
+        [Parameter(ParameterSetName = 'Token')]
         [Switch]
         $SkipCertificateValidation
 
     )
     begin {
-
-        if ($SkipCertificateValidation) {
-            if ($PSVersionTable.PSEdition -ne 'Core') {
-                Disable-CertificateValidation # Custom function to bypass X.509 cert checks
-            }
-            else {
-                $NoCertCheckPSCore = $true
-            }
         
-        }
-        $username = $ProxmoxCredential.UserName
-        $password = $ProxmoxCredential.GetNetworkCredential().Password
-        $body = @{
-            username = $username
-            password = $password
-        }
+        # Remove any module-scope variables in case the user is reauthenticating
+        Remove-Variable `
+        -Name SkipProxmoxCertificateCheck, ProxmoxApiToken, ProxmoxApiBaseUri, SkipProxmoxCertificateCheck, ProxmoxCsrfToken `
+        -Force `
+        -ErrorAction SilentlyContinue | Out-Null
 
+        # Setting the variables in this way allows them to be re-initialized upon new connections in the same shell
+        if ($SkipCertificateValidation) {
+            Set-Variable `
+            -Name SkipProxmoxCertificateCheck `
+            -Value $true `
+            -Option ReadOnly `
+            -Scope Script `
+            -Force
+        }
+        else {
+            Set-Variable `
+            -Name SkipProxmoxCertificateCheck `
+            -Value $false `
+            -Option ReadOnly `
+            -Scope Script `
+            -Force
+        }
+        
         [System.Uri]$proxmoxApiBaseUri = $ServerUri.AbsoluteUri + 'api2/json/'
-        $uri = $proxmoxApiBaseUri.AbsoluteUri + 'access/ticket'
 
     }
     process {
 
-        try {
+        if ($PSCmdlet.ParameterSetName -eq 'Credential') { 
 
-            if ($NoCertCheckPSCore) {
-                $apiCall = Invoke-RestMethod `
-                -Method Post `
-                -Uri $uri `
-                -SkipCertificateCheck `
-                -AllowUnencryptedAuthentication `
-                -Body $body `
-                -SessionVariable pveTicket    
+            $username = $ProxmoxCredential.UserName
+            $password = $ProxmoxCredential.GetNetworkCredential().Password
+            $body = @{
+                username = $username
+                password = $password
             }
-            else {
-                $apiCall = Invoke-RestMethod `
-                -Method Post `
-                -Uri $uri `
-                -Body $body `
-                -SessionVariable pveTicket    
+
+            try {
+                $request = Send-PveApiRequest -Method Post -Uri ($proxmoxApiBaseUri.AbsoluteUri + 'access/ticket') -Body $body -SessionVariable pveTicket
+            }
+            catch {
+                throw $_.Exception
             }
 
         }
-        catch {
+        else { # User is authenticating with API token
 
-            throw $_.Exception
+            Set-Variable `
+            -Name ProxmoxApiToken `
+            -Value @{ Authorization = $ApiKey } `
+            -Option ReadOnly `
+            -Scope Script `
+            -Force
+            
+            try { 
+                $request = Send-PveApiRequest -Method Get -Uri ($proxmoxApiBaseUri.AbsoluteUri + 'nodes')
+            }
+            catch {
+                throw $_.Exception
+            }
 
         }
 
     }
     end {
 
-        if ($SkipCertificateValidation -and -not $NoCertCheckPSCore) { Enable-CertificateValidation }
-        if ($apiCall) {
-
-            $cookie = New-PveAuthCookie $ServerUri $apiCall.data.ticket
-            $pveTicket.Cookies.Add($cookie)
-
-            # Setting the variables in this way allows them to be re-initialized upon new connections in the same shell
+        if ($request) { # Authentication was successfull. Initialize this module-scope variable.
             Set-Variable `
             -Name ProxmoxApiBaseUri `
             -Value $proxmoxApiBaseUri `
             -Option ReadOnly `
             -Scope Script `
             -Force
-
-            Set-Variable `
-            -Name ProxmoxWebSession `
-            -Value $pveTicket `
-            -Option ReadOnly `
-            -Scope Script `
-            -Force
-
-            Set-Variable `
-            -Name ProxmoxCsrfToken `
-            -Value @{ 'CSRFPreventionToken' = $apiCall.data.CSRFPreventionToken } `
-            -Option ReadOnly `
-            -Scope Script `
-            -Force
-
-            if ($SkipCertificateValidation) {
-
-                Set-Variable `
-                -Name SkipProxmoxCertificateCheck `
-                -Value $true `
-                -Option ReadOnly `
-                -Scope Script `
-                -Force
-
-            }
-            else {
-
-                Set-Variable `
-                -Name SkipProxmoxCertificateCheck `
-                -Value $false `
-                -Option ReadOnly `
-                -Scope Script `
-                -Force
-
-            }
-
         }
         else {
-
             return
-
         }
 
     }
