@@ -48,6 +48,7 @@ function Connect-PVEApi {
     PSObject
     #>
     [CmdletBinding(DefaultParameterSetName = 'Credential')]
+    [Alias('cpveapi')]
     Param (
 
         [Parameter(
