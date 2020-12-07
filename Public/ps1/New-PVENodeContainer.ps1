@@ -224,17 +224,17 @@ function New-PVENodeContainer {
         if ($PSBoundParameters['Architecture']) { $body.Add('arch', $PSBoundParameters['Architecture']) }
         if ($PSBoundParameters['BandwidthLimitKbps']) { $body.Add('bwlimit', $PSBoundParameters['BandwidthLimitKbps']) }
         if ($PSBoundParameters['DefaultConsoleMode']) { $body.Add('cmode', $PSBoundParameters['DefaultConsoleMode']) }
-        if ($PSBoundParameters['AddConsoleDevice']) { $body.Add('console', $PSBoundParameters['AddConsoleDevice']) }
+        if ($PSBoundParameters['AddConsoleDevice']) { $body.Add('console', 1) }
         if ($PSBoundParameters['Cores']) { $body.Add('cores', $PSBoundParameters['Cores']) }
         if ($PSBoundParameters['LimitCPUTime']) { $body.Add('cpulimit', $PSBoundParameters['LimitCPUTime']) }
         if ($PSBoundParameters['CPUPriority']) { $body.Add('cpuunits', $PSBoundParameters['CPUPriority']) }
-        if ($PSBoundParameters['DebugModeEnabled']) { $body.Add('debug', $PSBoundParameters['DebugModeEnabled']) }
+        if ($PSBoundParameters['DebugModeEnabled']) { $body.Add('debug', 1) }
         if ($PSBoundParameters['ContainerDescription']) { $body.Add('description', $PSBoundParameters['ContainerDescription']) }
         if ($PSBoundParameters['AdvancedFeatures']) { $body.Add('features', $PSBoundParameters['AdvancedFeatures']) }
-        if ($PSBoundParameters['Force']) { $body.Add('force', $PSBoundParameters['Force']) }
+        if ($PSBoundParameters['Force']) { $body.Add('force', 1) }
         if ($PSBoundParameters['HookScript']) { $body.Add('hookscript', $PSBoundParameters['HookScript']) }
         if ($PSBoundParameters['Hostname']) { $body.Add('hostname', $PSBoundParameters['Hostname']) }
-        if ($PSBoundParameters['IgnoreUnpackErrors']) { $body.Add('ignore-unpack-errors', $PSBoundParameters['IgnoreUnpackErrors']) }
+        if ($PSBoundParameters['IgnoreUnpackErrors']) { $body.Add('ignore-unpack-errors', 1) }
         if ($PSBoundParameters['Lock']) { $body.Add('lock', $PSBoundParameters['Lock']) }
         if ($PSBoundParameters['MemoryMB']) { $body.Add('memory', $PSBoundParameters['MemoryMB']) }
         if ($PSBoundParameters['Mountpoint']) {
@@ -250,25 +250,32 @@ function New-PVENodeContainer {
                 $body.Add("net[$($hashtable.Keys)]", $hashtable.Values) # Format should be that of param[n]=key1=value1,key2=value2
             }
         }
-        if ($PSBoundParameters['StartOnBoot']) { $body.Add('onboot', $PSBoundParameters['StartOnBoot']) }
+        if ($PSBoundParameters['StartOnBoot']) { $body.Add('onboot', 1) }
         if ($PSBoundParameters['OSType']) { $body.Add('ostype', $PSBoundParameters['OSType']) }
-        if ($PSBoundParameters['RootPassword']) { $body.Add('password', ($PSBoundParameters['RootPassword'] | Read-SecureString)) }
+        if ($PSBoundParameters['RootPassword']) {
+            try {
+                $body.Add('password', ($PSBoundParameters['RootPassword'] | Read-SecureString))
+            }
+            catch {
+                throw "Error reading SecureString from parameter RootPassword:`n$_"
+            }
+        }
         if ($PSBoundParameters['AddToPool']) { $body.Add('pool', $PSBoundParameters['AddToPool']) }
-        if ($PSBoundParameters['Protection']) { $body.Add('protection', $PSBoundParameters['Protection']) }
-        if ($PSBoundParameters['RestoreContainer']) { $body.Add('restore', $PSBoundParameters['RestoreContainer']) }
+        if ($PSBoundParameters['Protection']) { $body.Add('protection', 1) }
+        if ($PSBoundParameters['RestoreContainer']) { $body.Add('restore', 1) }
         if ($PSBoundParameters['RootFileSystem']) { $body.Add('rootfs', $PSBoundParameters['RootFileSystem']) }
         if ($PSBoundParameters['DNSSearchDomain']) { $body.Add('searchdomain', $PSBoundParameters['DNSSearchDomain']) }
         if ($PSBoundParameters['PublicSSHKey']) { $body.Add('ssh-public-keys', $PSBoundParameters['PublicSSHKey']) }
-        if ($PSBoundParameters['StartOnCreate']) { $body.Add('start', $PSBoundParameters['StartOnCreate']) }
+        if ($PSBoundParameters['StartOnCreate']) { $body.Add('start', 1) }
         if ($PSBoundParameters['StartUpOrder']) { $body.Add('startup', $PSBoundParameters['StartUpOrder']) }
         if ($PSBoundParameters['NodeStorageVolume']) { $body.Add('storage', $PSBoundParameters['NodeStorageVolume']) }
         if ($PSBoundParameters['SwapMemoryMB']) { $body.Add('swap', $PSBoundParameters['SwapMemoryMB']) }
         if ($PSBoundParameters['Tags']) { $body.Add('tags', $PSBoundParameters['Tags']) }
-        if ($PSBoundParameters['ConvertToTemplate']) { $body.Add('template', $PSBoundParameters['ConvertToTemplate']) }
+        if ($PSBoundParameters['ConvertToTemplate']) { $body.Add('template', 1) }
         if ($PSBoundParameters['ContainerTimezone']) { $body.Add('timezone', $PSBoundParameters['ContainerTimezone']) }
         if ($PSBoundParameters['TTYLimit']) { $body.Add('tty', $PSBoundParameters['TTYLimit']) }
-        if ($PSBoundParameters['UniqueAddress']) { $body.Add('unique', $PSBoundParameters['UniqueAddress']) }
-        if ($PSBoundParameters['UnprivilegedContainer']) { $body.Add('unprivileged', $PSBoundParameters['UnprivilegedContainer']) }
+        if ($PSBoundParameters['UniqueAddress']) { $body.Add('unique', 1) }
+        if ($PSBoundParameters['UnprivilegedContainer']) { $body.Add('unprivileged', 1) }
 
     }
     process {

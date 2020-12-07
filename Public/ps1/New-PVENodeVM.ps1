@@ -472,7 +472,7 @@ function New-PVENodeVM {
 
         $body = @{}
         if ($PSBoundParameters['VMID']) { $body.Add('vmid', $PSBoundParameters['VMID']) }
-        if ($PSBoundParameters['EnableACPI']) { $body.Add('acpi', $PSBoundParameters['EnableACPI']) }
+        if ($PSBoundParameters['EnableACPI']) { $body.Add('acpi', 1) }
         if ($PSBoundParameters['QEMUAgentOptions']) { $body.Add('agent', $PSBoundParameters['QEMUAgentOptions']) }
         if ($PSBoundParameters['Architecture']) { $body.Add('arch', $PSBoundParameters['Architecture']) }
         if ($PSBoundParameters['Archive']) { $body.Add('archive', $PSBoundParameters['Archive']) }
@@ -499,8 +499,8 @@ function New-PVENodeVM {
         if ($PSBoundParameters['CPUPriority']) { $body.Add('cpuunits', $PSBoundParameters['CPUPriority']) }
         if ($PSBoundParameters['VMDescription']) { $body.Add('description', $PSBoundParameters['VMDescription']) }
         if ($PSBoundParameters['EFIDisk']) { $body.Add('efidisk0', $PSBoundParameters['EFIDisk']) }
-        if ($PSBoundParameters['Force']) { $body.Add('force', $PSBoundParameters['Force']) }
-        if ($PSBoundParameters['FreezeCPU']) { $body.Add('freeze', $PSBoundParameters['FreezeCPU']) }
+        if ($PSBoundParameters['Force']) { $body.Add('force', 1) }
+        if ($PSBoundParameters['FreezeCPU']) { $body.Add('freeze', 1) }
         if ($PSBoundParameters['HookScript']) { $body.Add('hookscript', $PSBoundParameters['HookScript']) }
         if ($PSBoundParameters['MapHostPCIDevices']) {
             $PSBoundParameters['MapHostPCIDevices'].GetEnumerator() | ForEach-Object {
@@ -523,10 +523,10 @@ function New-PVENodeVM {
             }
         }
         if ($PSBoundParameters['InterVMSharedMemory']) { $body.Add('ivshmem', $PSBoundParameters['InterVMSharedMemory']) }
-        if ($PSBoundParameters['PersistHugePages']) { $body.Add('keephugepages', $PSBoundParameters['PersistHugePages']) }
+        if ($PSBoundParameters['PersistHugePages']) { $body.Add('keephugepages', 1) }
         if ($PSBoundParameters['VNCKeyboardLayout']) { $body.Add('keyboard', $PSBoundParameters['VNCKeyboardLayout']) }
-        if ($PSBoundParameters['EnableKVMHardwarVirtualization']) { $body.Add('kvm', $PSBoundParameters['EnableKVMHardwarVirtualization']) }
-        if ($PSBoundParameters['SetRealClockToLocalTime']) { $body.Add('localtime', $PSBoundParameters['SetRealClockToLocalTime']) }
+        if ($PSBoundParameters['EnableKVMHardwarVirtualization']) { $body.Add('kvm', 1) }
+        if ($PSBoundParameters['SetRealClockToLocalTime']) { $body.Add('localtime', 1) }
         if ($PSBoundParameters['VMLockType']) { $body.Add('lock', $PSBoundParameters['VMLockType']) }
         if ($PSBoundParameters['QEMUMachineType']) { $body.Add('machine', $PSBoundParameters['QEMUMachineType']) }
         if ($PSBoundParameters['VMMemoryMB']) { $body.Add('memory', $PSBoundParameters['VMMemoryMB']) }
@@ -540,14 +540,14 @@ function New-PVENodeVM {
                 $body.Add("net[$($hashtable.Keys)]", $hashtable.Values) # Format should be that of param[n]=key1=value1,key2=value2
             }
         }
-        if ($PSBoundParameters['EnableNUMA']) { $body.Add('numa', $PSBoundParameters['EnableNUMA']) }
+        if ($PSBoundParameters['EnableNUMA']) { $body.Add('numa', 1) }
         if ($PSBoundParameters['ConfigureNUMATopology']) {
             $PSBoundParameters['ConfigureNUMATopology'].GetEnumerator() | ForEach-Object {
                 $hashtable = $_
                 $body.Add("numa[$($hashtable.Keys)]", $hashtable.Values) # Format should be that of param[n]=key1=value1,key2=value2
             }
         }
-        if ($PSBoundParameters['StartVMAtSystemBoot']) { $body.Add('onboot', $PSBoundParameters['StartVMAtSystemBoot']) }
+        if ($PSBoundParameters['StartVMAtSystemBoot']) { $body.Add('onboot', 1) }
         if ($PSBoundParameters['GuestOSType']) { $body.Add('ostype', $PSBoundParameters['GuestOSType']) }
         if ($PSBoundParameters['MapHostParallelDevices']) {
             $PSBoundParameters['MapHostParallelDevices'].GetEnumerator() | ForEach-Object {
@@ -556,8 +556,8 @@ function New-PVENodeVM {
             }
         }
         if ($PSBoundParameters['AddToPool']) { $body.Add('pool', $PSBoundParameters['AddToPool']) }
-        if ($PSBoundParameters['ProtectVM']) { $body.Add('protection', $PSBoundParameters['ProtectVM']) }
-        if ($PSBoundParameters['CloseShellOnReboot']) { $body.Add('reboot', $PSBoundParameters['CloseShellOnReboot']) }
+        if ($PSBoundParameters['ProtectVM']) { $body.Add('protection', 1) }
+        if ($PSBoundParameters['CloseShellOnReboot']) { $body.Add('reboot', 1) }
         if ($PSBoundParameters['VirtIORandomNumberGenerator']) { $body.Add('rng0', $PSBoundParameters['VirtIORandomNumberGenerator']) }
         if ($PSBoundParameters['SATAVolumeOptions']) {
             $PSBoundParameters['SATAVolumeOptions'].GetEnumerator() | ForEach-Object {
@@ -583,15 +583,15 @@ function New-PVENodeVM {
         if ($PSBoundParameters['CPUSockets']) { $body.Add('sockets', $PSBoundParameters['CPUSockets']) }
         if ($PSBoundParameters['SPICEOptions']) { $body.Add('spice_enhancements', $PSBoundParameters['SPICEOptions']) }
         if ($PSBoundParameters['OpenSSHPublicKeys']) { $body.Add('sshkeys', $PSBoundParameters['OpenSSHPublicKeys']) }
-        if ($PSBoundParameters['StartVMOnCreate']) { $body.Add('start', $PSBoundParameters['StartVMOnCreate']) }
+        if ($PSBoundParameters['StartVMOnCreate']) { $body.Add('start', 1) }
         if ($PSBoundParameters['SetRealTimeClock']) { $body.Add('startdate', $PSBoundParameters['SetRealTimeClock']) }
         if ($PSBoundParameters['StartupShutdownOrder']) { $body.Add('startup', $PSBoundParameters['StartupShutdownOrder']) }
         if ($PSBoundParameters['DefaultStorage']) { $body.Add('storage', $PSBoundParameters['DefaultStorage']) }
-        if ($PSBoundParameters['EnableUSBTablet']) { $body.Add('tablet', $PSBoundParameters['EnableUSBTablet']) }
+        if ($PSBoundParameters['EnableUSBTablet']) { $body.Add('tablet', 1) }
         if ($PSBoundParameters['Tags']) { $body.Add('tags', $PSBoundParameters['Tags']) }
-        if ($PSBoundParameters['EnableTimeDriftFix']) { $body.Add('tdf', $PSBoundParameters['EnableTimeDriftFix']) }
-        if ($PSBoundParameters['ConvertToTemplate']) { $body.Add('template', $PSBoundParameters['ConvertToTemplate']) }
-        if ($PSBoundParameters['AssignUniqueEthernetAddress']) { $body.Add('unique', $PSBoundParameters['AssignUniqueEthernetAddress']) }
+        if ($PSBoundParameters['EnableTimeDriftFix']) { $body.Add('tdf', 1) }
+        if ($PSBoundParameters['ConvertToTemplate']) { $body.Add('template', 1) }
+        if ($PSBoundParameters['AssignUniqueEthernetAddress']) { $body.Add('unique', 1) }
         if ($PSBoundParameters['SCSIController']) { $body.Add('scsihw', $PSBoundParameters['SCSIController']) }
         if ($PSBoundParameters['USBDeviceOptions']) {
             $PSBoundParameters['USBDeviceOptions'].GetEnumerator() | ForEach-Object {

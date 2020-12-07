@@ -84,7 +84,8 @@ FunctionsToExport = 'Connect-PVEApi', 'Get-PVEApiVersion', 'Get-PVECluster',
                'Get-PVENodeUsbDevice', 'Get-PVENodeVersion', 'Get-PVENodeVM', 
                'Get-PVENodeVMOSInfo', 'Get-PVENodeZfsPool', 'New-PVENodeContainer', 
                'New-PVENodeVM', 'Open-PVENodeSpiceProxy', 'Remove-PVENodeContainer', 
-               'Remove-PVENodeVM', 'Restart-PVENode'
+               'Remove-PVENodeVM', 'Restart-PVENode', 
+               'Update-PVENodeAptPackageIndex'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = @()
