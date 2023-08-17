@@ -3,6 +3,7 @@ $moduleName = $PSScriptRoot.Split($directorySeparator)[-1]
 $moduleManifest = $PSScriptRoot + $directorySeparator + $moduleName + '.psd1'
 $publicFunctionsPath = $PSScriptRoot + $directorySeparator + 'Public' + $directorySeparator + 'ps1'
 $privateFunctionsPath = $PSScriptRoot + $directorySeparator + 'Private' + $directorySeparator + 'ps1'
+$classesPath =  $PSScriptRoot + $directorySeparator + 'Classes' + $directorySeparator + 'ps1'
 $currentManifest = Test-ModuleManifest $moduleManifest
 
 $aliases = @()
@@ -10,6 +11,7 @@ $publicFunctions = Get-ChildItem -Path $publicFunctionsPath | Where-Object {$_.E
 $privateFunctions = Get-ChildItem -Path $privateFunctionsPath | Where-Object {$_.Extension -eq '.ps1'}
 $publicFunctions | ForEach-Object { . $_.FullName }
 $privateFunctions | ForEach-Object { . $_.FullName }
+$classes | ForEach-Object { . $_.FullName }
 
 $publicFunctions | ForEach-Object { # Export all of the public functions from this module
 
